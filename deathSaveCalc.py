@@ -48,7 +48,7 @@ def death_save(user):
 
 def reset(user):
     rolls_dict.pop(f'{user}', None)
-    print(f'counters reset by {user}')
+    print(f'counters reset for {user}')
 
 
 load_dotenv()
@@ -65,7 +65,7 @@ async def on_ready():
     channel1 = client.get_channel(channel1ID)
     channel2 = client.get_channel(channel2ID)
     await channel1.send("Let's make some death saves!")
-    await channel2.send("Let's make some death saves!")
+    # await channel2.send("Let's make some death saves!")
 
 
 @client.event
@@ -88,19 +88,19 @@ async def on_message(message):
             if rolls_dict[user]['hits'] < 3 and rolls_dict[user]['misses'] < 3:
                 data = death_save(user)
                 rolls_dict[user]['save'] = data[2]
-                await message.channel.send(compare(rolls_dict[user]['hits'], rolls_dict[user]['misses'], rolls_dict[user]
-                ['save'], user))
-                print(compare(rolls_dict[user]['hits'], rolls_dict[user]['misses'], rolls_dict[user]
-                ['save'], user))
+                await message.channel.send(compare(rolls_dict[user]['hits'], rolls_dict[user]['misses'],
+                                                   rolls_dict[user]['save'], user))
+                print(compare(rolls_dict[user]['hits'], rolls_dict[user]['misses'], rolls_dict[user]['save'], user))
             else:
-                await message.channel.send('reset counter before rolling again')
+                await message.channel.send(f'```{user} must reset counter before rolling again```')
                 print(f"{user} must reset before rolling again")
     elif '!reset' in message.content.lower():
         reset(message.author)
-        await message.channel.send(f'counters reset for {message.author}')
+        await message.channel.send(f'```counters reset for {message.author}```')
     elif '!bye' in message.content.lower() or '!goodbye' in message.content.lower():
         await message.channel.send('Hope you survived! Goodbye!')
         print(f'{message.author} dismissed deathSaveCalcBot')
         await client.close()
+
 
 client.run(TOKEN)
