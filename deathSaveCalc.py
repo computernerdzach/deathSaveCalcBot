@@ -34,9 +34,6 @@ def death_save(user):
         elif death_roll in range(2, 10):
             rolls_dict[user]['misses'] += 1
 
-        # TODO: Does this line do anything? It's not storing the function result or doing anything with it.
-        compare(user_name=user, user_stats=rolls_dict[user])
-
         return death_roll
 
 
