@@ -26,23 +26,23 @@ def compare(hits, misses, save, user):
 
 
 def death_save(user):
-    successes = rolls_dict[f'{user}']['hits']
-    fails = rolls_dict[f'{user}']['misses']
+    successes = rolls_dict[user]['hits']
+    fails = rolls_dict[user]['misses']
     if successes <= 3 or fails <= 3:
         death_roll = random.randint(1, 20)
         if death_roll == 20:
             successes += 2
-            rolls_dict[f'{user}']['hits'] = successes
+            rolls_dict[user]['hits'] = successes
         elif death_roll in range(10, 20):
             successes += 1
-            rolls_dict[f'{user}']['hits'] = successes
+            rolls_dict[user]['hits'] = successes
         elif death_roll == 1:
             fails += 2
-            rolls_dict[f'{user}']['misses'] = fails
+            rolls_dict[user]['misses'] = fails
         elif death_roll in range(2, 10):
             fails += 1
-            rolls_dict[f'{user}']['misses'] = fails
-        compare(rolls_dict[f'{user}']['hits'], rolls_dict[f'{user}']['misses'], rolls_dict[f'{user}']['save'], user)
+            rolls_dict[user]['misses'] = fails
+        compare(rolls_dict[user]['hits'], rolls_dict[user]['misses'], rolls_dict[user]['save'], user)
         return successes, fails, death_roll
 
 
@@ -75,7 +75,7 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    user = f'{message.author}'
+    user = str(message.author)
     if message.author == client.user:
         return
     if '!death' in message.content.lower():
@@ -87,8 +87,8 @@ async def on_message(message):
             rolls_dict[user]['save'] = data[2]
             await message.channel.send(compare(rolls_dict[user]['hits'], rolls_dict[user]['misses'],
                                                rolls_dict[user]['save'], user))
-            print(compare(rolls_dict[f'{message.author}']['hits'], rolls_dict[f'{message.author}']['misses'],
-                          rolls_dict[f'{message.author}']['save'], user))
+            print(compare(rolls_dict[user]['hits'], rolls_dict[user]['misses'],
+                          rolls_dict[user]['save'], user))
         else:
             if rolls_dict[user]['hits'] < 3 and rolls_dict[user]['misses'] < 3:
                 data = death_save(user)
