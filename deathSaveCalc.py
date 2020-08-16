@@ -23,16 +23,15 @@ def compare(hits, misses, save):
         miss_meter = '[X][X][X]'
 
     compare_result = (hit_meter + " Successes\n" + miss_meter + " Failures")
-    print(compare_result)
+    # print(compare_result)
     return "```Save: " + str(save) + "\n" + compare_result + "```"
 
 
 def death_save(user):
     successes = rolls_dict[f'{user}']['hits']
     fails = rolls_dict[f'{user}']['misses']
-    while successes <= 3 or fails <= 3:
+    if successes <= 3 or fails <= 3:
         death_roll = random.randint(1, 20)
-        print(death_roll)
         if death_roll == 20:
             successes += 2
             rolls_dict[f'{user}']['hits'] = successes
@@ -52,7 +51,6 @@ def death_save(user):
 
 def reset(user):
     rolls_dict.pop(f'{user}', None)
-    print(rolls_dict)
     print('counters reset')
 
 
@@ -76,32 +74,31 @@ async def on_message(message):
         return
 
     if '!death' in message.content.lower():
-        if message.author not in rolls_dict:
-            rolls_dict[f'{message.author}'] = {'hits': 0, 'misses': 0, 'save': 0}
-            data = death_save(f'{message.author}')
-            rolls_dict[f'{message.author}']['hits'] = data[0]
-            rolls_dict[f'{message.author}']['misses'] = data[1]
-            rolls_dict[f'{message.author}']['save'] = data[2]
-            await message.channel.send(compare(rolls_dict[f'{message.author}']['hits'], rolls_dict[f'{message.author}']['misses'],
-                                               rolls_dict[f'{message.author}']['save']))
+        user = f'{message.author}'
+        if user not in rolls_dict:
+            rolls_dict[user] = {'hits': 0, 'misses': 0, 'save': 0}
+            data = death_save(user)
+            rolls_dict[user]['hits'] = data[0]
+            rolls_dict[user]['misses'] = data[1]
+            rolls_dict[user]['save'] = data[2]
+            await message.channel.send(compare(rolls_dict[f'{message.author}']['hits'], rolls_dict[f'{message.author}']
+            ['misses'], rolls_dict[f'{message.author}']['save']))
         else:
-            data = death_save(f'{message.author}')
-            rolls_dict[f'{message.author}']['hits'] = int(rolls_dict[f'{message.author}']['hits']) + int(data[0])
-            rolls_dict[f'{message.author}']['misses'] = int(rolls_dict[f'{message.author}']['misses']) + int(data[1])
-            rolls_dict[f'{message.author}']['save'] = data[2]
-            await message.channel.send(
-                compare(rolls_dict[f'{message.author}']['hits'], rolls_dict[f'{message.author}']['misses'],
-                        rolls_dict[f'{message.author}']['save']))
-
-        if rolls_dict[f'{message.author}']['hits'] > 2 or rolls_dict[f'{message.author}']['misses'] > 2:
-            await message.channel.send('reset counter before rolling again')
+            if rolls_dict[user]['hits'] < 3 and rolls_dict[user]['misses'] < 3:
+                data = death_save(user)
+                rolls_dict[user]['save'] = data[2]
+                await message.channel.send(compare(rolls_dict[user]['hits'], rolls_dict[user]['misses'], rolls_dict[user]
+                ['save']))
+            else:
+                await message.channel.send('reset counter before rolling again')
 
     elif '!reset' in message.content.lower():
         reset(message.author)
-        await message.channel.send('counters reset')
+        await message.channel.send(f'counters reset for {message.author}')
     elif '!bye' in message.content.lower() or '!goodbye' in message.content.lower():
         await message.channel.send('Hope you survived! Goodbye!')
         print(f'{message.author} dismissed deathSaveCalcBot')
         await client.close()
+
 
 client.run(TOKEN)
