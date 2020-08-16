@@ -5,22 +5,8 @@ from dotenv import load_dotenv
 
 
 def compare(hits, misses, save, user):
-    if hits == 0:
-        hit_meter = '[ ][ ][ ]'
-    elif hits == 1:
-        hit_meter = '[0][ ][ ]'
-    elif hits == 2:
-        hit_meter = '[0][0][ ]'
-    elif hits >= 3:
-        hit_meter = '[X][X][X]'
-    if misses == 0:
-        miss_meter = '[ ][ ][ ]'
-    elif misses == 1:
-        miss_meter = '[0][ ][ ]'
-    elif misses == 2:
-        miss_meter = '[0][0][ ]'
-    elif misses >= 3:
-        miss_meter = '[X][X][X]'
+    hit_meter = '[0]' * hits + '[ ]' * (3 - hits)
+    miss_meter = '[0]' * misses + '[ ]' * (3 - misses)
     compare_result = (hit_meter + " Successes\n" + miss_meter + " Failures")
     return f"```{user}'s Save: " + str(save) + "\n" + compare_result + "```"
 
