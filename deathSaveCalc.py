@@ -65,7 +65,7 @@ async def on_ready():
     channel1 = client.get_channel(channel1ID)
     channel2 = client.get_channel(channel2ID)
     await channel1.send("Let's make some death saves!")
-    # await channel2.send("Let's make some death saves!")
+    await channel2.send("Let's make some death saves!")
 
 
 @client.event
