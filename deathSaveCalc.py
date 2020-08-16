@@ -7,21 +7,22 @@ from dotenv import load_dotenv
 def compare(hits, misses):
     if hits == 0:
         hit_meter = '[ ][ ][ ]'
-    if hits == 1:
+    elif hits == 1:
         hit_meter = '[0][ ][ ]'
-    if hits == 2:
+    elif hits == 2:
         hit_meter = '[0][0][ ]'
-    if hits == 3:
-        hit_meter = '[0][0][0]'
+    elif hits >= 3:
+        hit_meter = '[X][X][X]'
     if misses == 0:
         miss_meter = '[ ][ ][ ]'
-    if misses == 1:
+    elif misses == 1:
         miss_meter = '[0][ ][ ]'
-    if misses == 2:
+    elif misses == 2:
         miss_meter = '[0][0][ ]'
-    if misses == 3:
-        miss_meter = '[0][0][0]'
-    compare_result = (hit_meter + " Successes\n" + miss_meter + " Failures")
+    elif misses >= 3:
+        miss_meter = '[X][X][X]'
+
+    compare_result = ("```" + hit_meter + " Successes\n" + miss_meter + " Failures```")
     print(compare_result)
     return compare_result
 
@@ -33,7 +34,7 @@ fails = 0
 def death_save():
     global successes
     global fails
-    while successes < 3 or fails < 3:
+    while successes <= 3 or fails <= 3:
         death_roll = random.randint(1, 20)
         print(death_roll)
         if death_roll == 20:
@@ -45,6 +46,15 @@ def death_save():
         elif death_roll in range(2, 10):
             fails += 1
         return str(str(death_roll) + "\n" + compare(successes, fails))
+    while successes >= 4 or fails >= 4:
+        return "too many saves"
+
+
+def reset():
+    global successes
+    global fails
+    successes = 0
+    fails = 0
 
 
 load_dotenv()
@@ -70,7 +80,12 @@ async def on_message(message):
         return
 
     if '!death' in message.content.lower():
-        await message.channel.send(death_save())
-
+        if successes > 2 or fails > 2:
+            await message.channel.send('reset counter before rolling again')
+        else:
+            await message.channel.send(death_save())
+    elif '!reset' in message.content.lower():
+        reset()
+        await message.channel.send('counters reset')
 
 client.run(TOKEN)
