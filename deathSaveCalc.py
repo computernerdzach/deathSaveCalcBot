@@ -98,7 +98,7 @@ async def on_message(message):
         reset(message.author)
         await message.channel.send(f'```counters reset for {message.author}```')
     elif '!bye' in message.content.lower() or '!goodbye' in message.content.lower():
-        await message.channel.send('Hope you survived! Goodbye!')
+        await message.channel.send('```Hope you survived! Goodbye!```')
         print(f'{message.author} dismissed deathSaveCalcBot')
         await client.close()
 
