@@ -26,24 +26,21 @@ def compare(hits, misses, save, user):
 
 
 def death_save(user):
-    successes = rolls_dict[user]['hits']
-    fails = rolls_dict[user]['misses']
-    if successes <= 3 or fails <= 3:
+    if rolls_dict[user]['hits'] <= 3 or rolls_dict[user]['misses'] <= 3:
         death_roll = random.randint(1, 20)
         if death_roll == 20:
-            successes += 2
-            rolls_dict[user]['hits'] = successes
+            rolls_dict[user]['hits'] += 2
         elif death_roll in range(10, 20):
-            successes += 1
-            rolls_dict[user]['hits'] = successes
+            rolls_dict[user]['hits'] += 1
         elif death_roll == 1:
-            fails += 2
-            rolls_dict[user]['misses'] = fails
+            rolls_dict[user]['misses'] += 2
         elif death_roll in range(2, 10):
-            fails += 1
-            rolls_dict[user]['misses'] = fails
+            rolls_dict[user]['misses'] += 1
+
+        # TODO: Does this line do anything? It's not storing the function result or doing anything with it.
         compare(rolls_dict[user]['hits'], rolls_dict[user]['misses'], rolls_dict[user]['save'], user)
-        return successes, fails, death_roll
+
+        return death_roll
 
 
 def reset(user):
@@ -81,18 +78,14 @@ async def on_message(message):
     if '!death' in message.content.lower():
         if user not in rolls_dict:
             rolls_dict[user] = {'hits': 0, 'misses': 0, 'save': 0}
-            data = death_save(user)
-            rolls_dict[user]['hits'] = data[0]
-            rolls_dict[user]['misses'] = data[1]
-            rolls_dict[user]['save'] = data[2]
+            rolls_dict[user]['save'] = death_save(user)
             await message.channel.send(compare(rolls_dict[user]['hits'], rolls_dict[user]['misses'],
                                                rolls_dict[user]['save'], user))
             print(compare(rolls_dict[user]['hits'], rolls_dict[user]['misses'],
                           rolls_dict[user]['save'], user))
         else:
             if rolls_dict[user]['hits'] < 3 and rolls_dict[user]['misses'] < 3:
-                data = death_save(user)
-                rolls_dict[user]['save'] = data[2]
+                rolls_dict[user]['save'] = death_save(user)
                 await message.channel.send(compare(rolls_dict[user]['hits'], rolls_dict[user]['misses'],
                                                    rolls_dict[user]['save'], user))
                 print(compare(rolls_dict[user]['hits'], rolls_dict[user]['misses'], rolls_dict[user]['save'], user))
