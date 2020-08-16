@@ -4,11 +4,17 @@ import discord
 from dotenv import load_dotenv
 
 
-def compare(hits, misses, save, user):
-    hit_meter = '[0]' * hits + '[ ]' * (3 - hits)
-    miss_meter = '[0]' * misses + '[ ]' * (3 - misses)
+def compare(user_name, user_stats):
+    """
+    Builds ascii death save visualization
+    :param user_name: Name of the current User
+    :param user_stats: The User's current death save stats
+    :return: String, User's current message output
+    """
+    hit_meter = '[0]' * user_stats['hits'] + '[ ]' * (3 - user_stats['hits'])
+    miss_meter = '[0]' * user_stats['misses'] + '[ ]' * (3 - user_stats['misses'])
     compare_result = (hit_meter + " Successes\n" + miss_meter + " Failures")
-    return f"```{user}'s Save: " + str(save) + "\n" + compare_result + "```"
+    return f"```{user_name}'s Save: {user_stats['save']}\n{compare_result}```"
 
 
 def death_save(user):
@@ -29,7 +35,7 @@ def death_save(user):
             rolls_dict[user]['misses'] += 1
 
         # TODO: Does this line do anything? It's not storing the function result or doing anything with it.
-        compare(rolls_dict[user]['hits'], rolls_dict[user]['misses'], rolls_dict[user]['save'], user)
+        compare(user_name=user, user_stats=rolls_dict[user])
 
         return death_roll
 
@@ -70,16 +76,15 @@ async def on_message(message):
         if user not in rolls_dict:
             rolls_dict[user] = {'hits': 0, 'misses': 0, 'save': 0}
             rolls_dict[user]['save'] = death_save(user)
-            await message.channel.send(compare(rolls_dict[user]['hits'], rolls_dict[user]['misses'],
-                                               rolls_dict[user]['save'], user))
-            print(compare(rolls_dict[user]['hits'], rolls_dict[user]['misses'],
-                          rolls_dict[user]['save'], user))
+            output = compare(user_name=user, user_stats=rolls_dict[user])
+            await message.channel.send(output)
+            print(output)
         else:
             if rolls_dict[user]['hits'] < 3 and rolls_dict[user]['misses'] < 3:
                 rolls_dict[user]['save'] = death_save(user)
-                await message.channel.send(compare(rolls_dict[user]['hits'], rolls_dict[user]['misses'],
-                                                   rolls_dict[user]['save'], user))
-                print(compare(rolls_dict[user]['hits'], rolls_dict[user]['misses'], rolls_dict[user]['save'], user))
+                output = compare(user_name=user, user_stats=rolls_dict[user])
+                await message.channel.send(output)
+                print(output)
             else:
                 await message.channel.send(f'```{user} must reset counter before rolling again```')
                 print(f"{user} must reset before rolling again")
