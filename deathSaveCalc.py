@@ -4,7 +4,7 @@ import discord
 from dotenv import load_dotenv
 
 
-def compare(user_name, user_stats):
+def assemble_output_message(user_name, user_stats):
     """
     Builds ascii death save visualization
     :param user_name: Name of the current User
@@ -80,13 +80,13 @@ async def on_message(message):
         if user not in rolls_dict:
             rolls_dict[user] = {'hits': 0, 'misses': 0, 'save': 0}
             rolls_dict[user]['save'] = death_save(user)
-            output = compare(user_name=user, user_stats=rolls_dict[user])
+            output = assemble_output_message(user_name=user, user_stats=rolls_dict[user])
             await message.channel.send(output)
             print(output)
         else:
             if rolls_dict[user]['hits'] < 3 and rolls_dict[user]['misses'] < 3:
                 rolls_dict[user]['save'] = death_save(user)
-                output = compare(user_name=user, user_stats=rolls_dict[user])
+                output = assemble_output_message(user_name=user, user_stats=rolls_dict[user])
                 await message.channel.send(output)
                 print(output)
             else:
