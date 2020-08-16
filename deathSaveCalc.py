@@ -26,6 +26,11 @@ def compare(hits, misses, save, user):
 
 
 def death_save(user):
+    """
+    Updates the global rolls_dict with Death Save roll results
+    :param user: String, representing the user key to reference in the global rolls_dict
+    :return: the d20 roll result
+    """
     if rolls_dict[user]['hits'] <= 3 or rolls_dict[user]['misses'] <= 3:
         death_roll = random.randint(1, 20)
         if death_roll == 20:
