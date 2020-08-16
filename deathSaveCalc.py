@@ -45,7 +45,7 @@ def death_save():
             fails += 2
         elif death_roll in range(2, 10):
             fails += 1
-        return str(str(death_roll) + "\n" + compare(successes, fails))
+        return str("```" + str(death_roll) + "```" + "\n" + compare(successes, fails))
     while successes >= 4 or fails >= 4:
         return "too many saves"
 
@@ -55,6 +55,7 @@ def reset():
     global fails
     successes = 0
     fails = 0
+    print('counters reset')
 
 
 load_dotenv()
@@ -87,5 +88,9 @@ async def on_message(message):
     elif '!reset' in message.content.lower():
         reset()
         await message.channel.send('counters reset')
+    elif '!bye' in message.content.lower() or '!goodbye' in message.content.lower():
+        await message.channel.send('Hope you survived! Goodbye!')
+        print(f'{message.author} dismissed deathSaveCalcBot')
+        await client.close()
 
 client.run(TOKEN)
