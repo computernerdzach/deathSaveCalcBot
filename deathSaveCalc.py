@@ -13,7 +13,14 @@ def compare(user_name, user_stats):
     """
     hit_meter = '[0]' * user_stats['hits'] + '[ ]' * (3 - user_stats['hits'])
     miss_meter = '[0]' * user_stats['misses'] + '[ ]' * (3 - user_stats['misses'])
-    compare_result = (hit_meter + " Successes\n" + miss_meter + " Failures")
+
+    # X's indicate a full meter
+    if user_stats['hits'] == 3:
+        hit_meter = hit_meter.replace('0', 'X')
+    if user_stats['misses'] == 3:
+        miss_meter = miss_meter.replace('0', 'X')
+
+    compare_result = f"{hit_meter} Successes\n{miss_meter} Failures"
     return f"```{user_name}'s Save: {user_stats['save']}\n{compare_result}```"
 
 
