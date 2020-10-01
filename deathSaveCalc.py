@@ -51,8 +51,6 @@ def reset(user):
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
-channel1ID = int(os.getenv('CHANNEL1'))
-channel2ID = int(os.getenv('CHANNEL2'))
 client = discord.Client()
 rolls_dict = {}
 
@@ -60,15 +58,6 @@ rolls_dict = {}
 @client.event
 async def on_ready():
     print(f'{client.user} has connected to Discord!')
-    # TODO: Instead of expecting a static set of Channels,
-    #       try dynamically getting the list of installed Channels
-    #       using the Client Guilds attribute:
-    #       https://discordpy.readthedocs.io/en/latest/api.html#discord.Client.guilds
-    channel1 = client.get_channel(channel1ID)
-    channel2 = client.get_channel(channel2ID)
-    # TODO: Then, this becomes: for channel in channels: channel.send('blah')
-    await channel1.send("Let's make some death saves!")
-    await channel2.send("Let's make some death saves!")
 
 
 @client.event
