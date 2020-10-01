@@ -40,7 +40,6 @@ def death_save(user):
             rolls_dict[user]['misses'] += 2
         elif death_roll in range(2, 10):
             rolls_dict[user]['misses'] += 1
-
         return death_roll
 
 
@@ -53,6 +52,11 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 client = discord.Client()
 rolls_dict = {}
+calculon_quotes = ['He knows that the key to a good scene is a dramatic… PAUSE!', 'Noooooooooooooo!!!!', 'Oh, fate most '
+                   'cruel, would that my boundless acting skills would avail mе a sword with which to slay this wretched'
+                   ' curse.', "Let's kick him some more.", "No, wait, let me explain", "Dramatic pause.", "Hey, this "
+                   "one's for the new couple. It's your day. It's all about you. Who's that singing at your wedding? "
+                    "It's Calculon, Calculon, Calculon!"]
 
 
 @client.event
@@ -88,6 +92,8 @@ async def on_message(message):
         await message.channel.send('```Hope you survived! Goodbye!```')
         print(f'{message.author} dismissed deathSaveCalcBot')
         await client.close()
+    elif '!calculon' in message.content.lower():
+        await message.channel.send(random.choice(calculon_quotes))
 
 
 client.run(TOKEN)
