@@ -54,9 +54,9 @@ client = discord.Client()
 rolls_dict = {}
 calculon_quotes = ['He knows that the key to a good scene is a dramatic… PAUSE!', 'Noooooooooooooo!!!!', 'Oh, fate most '
                    'cruel, would that my boundless acting skills would avail mе a sword with which to slay this wretched'
-                   ' curse.', "Let's kick him some more.", "No, wait, let me explain", "Dramatic pause.", "Hey, this "
-                   "one's for the new couple. It's your day. It's all about you. Who's that singing at your wedding? "
-                    "It's Calculon, Calculon, Calculon!"]
+                   ' curse.', "Let's kick him some more.", "No, wait, let me explain", "Dramatic........ pause.", "Hey, "
+                   "this one's for the new couple. It's your day. It's all about you. Who's that singing at your "
+                   "wedding? It's Calculon, Calculon, Calculon!"]
 
 
 @client.event
