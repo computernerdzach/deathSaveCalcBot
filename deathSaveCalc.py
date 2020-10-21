@@ -51,6 +51,12 @@ def reset(user):
     print(f'counters reset for {user}')
 
 
+def add_user(user):
+    rolls_dict[user] = {'hits': 0, 'misses': 0, 'save': 0}
+    rolls_dict[user]['save'] = death_save(user)
+    return assemble_output_message(user_name=user, user_stats=rolls_dict[user])
+
+
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 client = discord.Client()
@@ -60,6 +66,12 @@ calculon_quotes = ['He knows that the key to a good scene is a dramatic… PAUSE
                    ' curse.', "Let's kick him some more.", "No, wait, let me explain", "Dramatic........ pause.", "Hey, "
                    "this one's for the new couple. It's your day. It's all about you. Who's that singing at your "
                    "wedding? It's Calculon, Calculon, Calculon!"]
+helpMessage = '''```Welcome to Calculon, the death save calculator!
+To get Calculon's attention, use '!Calculon' then enter your command:
+    * death - Makes and tracks death saves for each user.
+    * reset - Resets your own personal tracker.
+    * quote - Generates a random Calculon quote from Futurama.
+    * help  - Brings up this message```'''
 
 
 @client.event
@@ -72,31 +84,28 @@ async def on_message(message):
     user = str(message.author)
     if message.author == client.user:
         return
-    if '!death' in message.content.lower():
-        if user not in rolls_dict:
-            rolls_dict[user] = {'hits': 0, 'misses': 0, 'save': 0}
-            rolls_dict[user]['save'] = death_save(user)
-            output = assemble_output_message(user_name=user, user_stats=rolls_dict[user])
-            await message.channel.send(output)
-            print(output)
-        else:
-            if rolls_dict[user]['hits'] < 3 and rolls_dict[user]['misses'] < 3:
-                rolls_dict[user]['save'] = death_save(user)
-                output = assemble_output_message(user_name=user, user_stats=rolls_dict[user])
+    if '!calculon' in message.content.lower():
+        if 'death' in message.content.lower():
+            if user not in rolls_dict:
+                output = add_user(user)
                 await message.channel.send(output)
                 print(output)
             else:
-                await message.channel.send(f'```{user} must reset counter before rolling again```')
-                print(f"{user} must reset before rolling again")
-    elif '!reset' in message.content.lower():
-        reset(message.author)
-        await message.channel.send(f'```counters reset for {message.author}```')
-    elif '!bye' in message.content.lower() or '!goodbye' in message.content.lower():
-        await message.channel.send('```Hope you survived! Goodbye!```')
-        print(f'{message.author} dismissed deathSaveCalcBot')
-        await client.close()
-    elif '!calculon' in message.content.lower():
-        await message.channel.send(random.choice(calculon_quotes))
+                if rolls_dict[user]['hits'] < 3 and rolls_dict[user]['misses'] < 3:
+                    rolls_dict[user]['save'] = death_save(user)
+                    output = assemble_output_message(user_name=user, user_stats=rolls_dict[user])
+                    await message.channel.send(output)
+                    print(output)
+                else:
+                    await message.channel.send(f'```{user} must reset counter before rolling again```')
+                    print(f"{user} must reset before rolling again")
+        if 'reset' in message.content.lower():
+            reset(message.author)
+            await message.channel.send(f'```counters reset for {message.author}```')
+        if 'quote' in message.content.lower():
+            await message.channel.send(random.choice(calculon_quotes))
+        if 'help' in message.content.lower():
+            await message.channel.send(helpMessage)
 
 
 client.run(TOKEN)
