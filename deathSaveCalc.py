@@ -33,11 +33,14 @@ def death_save(user):
     if rolls_dict[user]['hits'] <= 3 or rolls_dict[user]['misses'] <= 3:
         death_roll = random.randint(1, 20)
         if death_roll == 20:
-            rolls_dict[user]['hits'] += 2
+            rolls_dict[user]['hits'] = 3
         elif death_roll in range(10, 20):
             rolls_dict[user]['hits'] += 1
         elif death_roll == 1:
-            rolls_dict[user]['misses'] += 2
+            if rolls_dict[user]['misses'] < 2:
+                rolls_dict[user]['misses'] += 2
+            elif rolls_dict[user]['misses'] >= 2:
+                rolls_dict[user]['misses'] = 3
         elif death_roll in range(2, 10):
             rolls_dict[user]['misses'] += 1
         return death_roll
